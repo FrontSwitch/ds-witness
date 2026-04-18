@@ -131,9 +131,12 @@ export async function homePage(container: HTMLElement): Promise<void> {
 
     let scoreHtml = ''
     let radarHtml = ''
+    let questions: Awaited<ReturnType<typeof loadQuestions>> = null
     try {
-      const questions = await loadQuestions(dataset, psvPath)
-      if (!questions) return null  // PSV not found — skip this card
+      questions = await loadQuestions(dataset, psvPath)
+    } catch { /* psv not loaded */ }
+    if (!questions || questions.length === 0) return null  // PSV not found or failed to load — skip this card
+    try {
       if (completed.length > 0) {
         const answers = getAnswers(completed[0].id)
         const score = computeScore(dataset, questions, answers)
@@ -167,7 +170,7 @@ export async function homePage(container: HTMLElement): Promise<void> {
           radarHtml = `<div class="card-radar">${secSvg}</div>`
         }
       }
-    } catch { /* psv not loaded yet */ }
+    } catch { /* scoring failed */ }
 
     const meta = getDatasetMeta(dataset)
 

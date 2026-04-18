@@ -7,6 +7,23 @@ Customize question wording to match what means something to you. No server, no a
 DISCLAIMER: This tool is a personal data collection project for self-observation. It is NOT a diagnostic tool, medical device, or substitute for professional clinical advice. Use at your own risk.
 ---
 
+## Releases
+
+### Version v1.0.0
+
+The first release is available. Calling it "Early Access." Let me know what you find!
+
+[open an issue](https://github.com/FrontSwitch/ds-witness/issues)
+
+<table>
+  <tr>
+    <td><img src="docs/fsp-run.png" alt="Run of Functional State Pool" width="33%"></td>
+    <td><img src="docs/fsp-history2.png" alt="History of Functional State Pool runs" width="33%"></td>
+    <td><img src="docs/fsp-card.png" alt="Main screen card for Function State Pool assessments" width="33%"></td>
+  </tr>
+</table>
+
+--- 
 ## Running it
 
 ```bash
