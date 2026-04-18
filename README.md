@@ -17,9 +17,9 @@ The first release is available. Calling it "Early Access." Let me know what you 
 
 <table>
   <tr>
-    <td><img src="docs/fsp-run.png" alt="Run of Functional State Pool" width="33%"></td>
-    <td><img src="docs/fsp-history2.png" alt="History of Functional State Pool runs" width="33%"></td>
-    <td><img src="docs/fsp-card.png" alt="Main screen card for Function State Pool assessments" width="33%"></td>
+    <td><img src="docs/images/fsp-run.png" alt="Run of Functional State Pool" width="33%"></td>
+    <td><img src="docs/images/fsp-history2.png" alt="History of Functional State Pool runs" width="33%"></td>
+    <td><img src="docs/images/fsp-card.png" alt="Main screen card for Function State Pool assessments" width="33%"></td>
   </tr>
 </table>
 
