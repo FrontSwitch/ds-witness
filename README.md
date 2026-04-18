@@ -9,7 +9,7 @@ DISCLAIMER: This tool is a personal data collection project for self-observation
 
 ## Releases
 
-### Version v1.0.0
+### Version v1.0.1
 
 The first release is available. Calling it "Early Access." Let me know what you find!
 
@@ -50,7 +50,7 @@ npm run dev    # http://localhost:5173
 
 | ID | Name | Scale |
 |----|------|-------|
-| `fsp` | FrontSwitch Functional Scale Pool (36 items pick 12) | 48 |
+| `fsp` | FrontSwitch Functional Scale Pool (36 items pick 12) | 0-100 |
 | `phq-9` | Patient Health Questionnaire-9 | 0–27 |
 | `gad-7` | Generalized Anxiety Disorder-7 | 0–21 |
 | `ffmq-15` | Five Facet Mindfulness Questionnaire (15-item) | 0–60 |
@@ -78,17 +78,6 @@ Start a new run from the home screen or resume an in-progress one. Questions rev
 | 🔍 | Curious about this |
 
 Emotes are stored per question per run and shown in the history table (subclass rows show the union across their questions for that run).
-
----
-
-## History
-
-- One column per completed run, newest on the left
-- Each cell shows the value and a ± delta vs the prior run; cells beyond the jump threshold are highlighted
-- A sparkline per subclass row shows the trend across all runs, with a dashed average line
-- Subclass rows sorted by highest score in the latest run; click to expand individual questions
-- PHQ-9 and GAD-7 columns are tinted by severity band
-- Each column header shows the assessment version hash (see below)
 
 ---
 
@@ -134,9 +123,18 @@ Enable **Remap 0–10 → 0–4** if your historical data used a 0–10 scale. U
    3|Category|Subclass|reverse|Scored as 4 − raw
    ```
 
-2. Add `'<name>'` to `DATASETS` in `src/pages/home.ts`
-3. Add a scoring entry in `src/scoring.ts` (or omit for raw-sum default)
-4. Add a config entry in `src/datasets.ts` for scale labels, preamble, and severity bands
+2. Edit meta data. See the other psv files for examples.
+
+**PSV metadata** — `# @key: value` comment lines at the top of each PSV file, parsed into `DatasetMeta`:
+- `@title` — full display name
+- `@tagline` — short descriptor shown on home card
+- `@frequency` — target days between runs (drives "take now" / "in N days" badge)
+- `@max` — displayed scale ceiling (e.g. 100, 27, 21)
+- `@normalize` — canonical question count used as divisor for normalized scoring (e.g. 162, 60); omit for raw sum
+- `@item-max` — per-question max value (default 4); used in reverse scoring and normalized formula
+- `@secondary: flag=Label` — declares a secondary score group; one line per group. Questions get the flag in their flags field. Repeatable for multiple groups.   
+
+3. Add record to `public/data/datasets.json`
 
 ---
 
