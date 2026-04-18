@@ -68,7 +68,7 @@ async function saveToDisk(): Promise<void> {
 
 // ── IndexedDB (browser fallback) ───────────────────────────────────────────
 
-const IDB_NAME = 'com.switchfrontstudio.dsw'
+const IDB_NAME = 'com.frontswitchstudio.dsw'
 const IDB_STORE = 'data'
 
 function openIDB(): Promise<IDBDatabase> {

@@ -24,11 +24,11 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 
 ## Architecture
 
-**Stack:** Vanilla TypeScript + Vite + Tauri 2. No UI framework. sql.js (SQLite WASM) in-memory, persisted to disk via Tauri's fs plugin (native app) or IndexedDB (`com.switchfrontstudio.dsw`) in browser.
+**Stack:** Vanilla TypeScript + Vite + Tauri 2. No UI framework. sql.js (SQLite WASM) in-memory, persisted to disk via Tauri's fs plugin (native app) or IndexedDB (`com.frontswitchstudio.dsw`) in browser.
 
 **Routing:** `src/router.ts` — hash-based (`#/assessment/mid-60`). `route()` registers handlers; `navigate()` changes the hash.
 
-**Database:** `src/db.ts` — wraps sql.js. Detects Tauri via `window.__TAURI_INTERNALS__`. In Tauri: reads/writes `~/Library/Application Support/com.dsw.app/dsw.sqlite`. In browser: uses IndexedDB. Writes debounced 150ms. Schema migrations run via `ALTER TABLE` with try/catch on each.
+**Database:** `src/db.ts` — wraps sql.js. Detects Tauri via `window.__TAURI_INTERNALS__`. In Tauri: reads/writes `~/Library/Application Support/com.frontswitchstudio.dsw/dsw.sqlite`. In browser: uses IndexedDB. Writes debounced 150ms. Schema migrations run via `ALTER TABLE` with try/catch on each.
 
 **Questions:** Loaded from `public/data/<dataset>.psv` at runtime. PSV format: `id|category|subclass|flags|question text`. Lines starting with `#` are comments. Flags are comma-separated lowercase strings. Parsed and cached by `src/questions.ts`. Key exports: `hasFlag(q, flag)`, `getDatasetMeta(dataset)`, `computeAssessmentVersion(questions)`.
 

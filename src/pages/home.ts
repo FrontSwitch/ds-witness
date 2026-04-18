@@ -105,7 +105,7 @@ export async function homePage(container: HTMLElement): Promise<void> {
           <p>Customize question wording to match what means something to you. No server, no account, no data leaves your machine. The database is a plain SQLite file you own.</p>
           <p class="about-disclaimer">DISCLAIMER: This tool is a personal data collection project for self-observation. It is NOT a diagnostic tool, medical device, or substitute for professional clinical advice. Use at your own risk.</p>
           <div class="about-links">
-            <a class="about-github" href="#" id="about-github">GitHub</a>
+            <a class="about-github" href="https://github.com/FrontSwitch/ds-witness" target="_blank" rel="noopener">GitHub</a>
             <span class="about-copy-line">© 2026 Front Switch Studio</span>
           </div>
         </div>
@@ -119,7 +119,6 @@ export async function homePage(container: HTMLElement): Promise<void> {
   container.querySelector('#about-btn')!.addEventListener('click', () => { aboutOverlay.hidden = false })
   container.querySelector('#about-close')!.addEventListener('click', () => { aboutOverlay.hidden = true })
   aboutOverlay.addEventListener('click', (e) => { if (e.target === aboutOverlay) aboutOverlay.hidden = true })
-  container.querySelector('#about-github')!.addEventListener('click', (e) => { e.preventDefault() })
 
   const grid = container.querySelector('#dataset-grid')!
 

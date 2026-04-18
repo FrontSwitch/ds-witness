@@ -168,7 +168,7 @@ button {
 }
 .about-overlay[hidden] { display: none; }
 .about-modal {
-  background: var(--surface);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 32px;

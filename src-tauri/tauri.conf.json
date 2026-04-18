@@ -1,6 +1,6 @@
 {
   "productName": "Dissociative System Witness",
-  "identifier": "com.dsw.app",
+  "identifier": "com.frontswitchstudio.dsw",
   "version": "1.0.0",
   "build": {
     "beforeDevCommand": "npm run dev",

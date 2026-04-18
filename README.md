@@ -28,15 +28,11 @@ npm run dev    # http://localhost:5173
 
 | ID | Name | Scale |
 |----|------|-------|
-| `mid-60` | Multidimensional Inventory of Dissociation (60-item) | 0–100 |
-| `mid-162` | Multidimensional Inventory of Dissociation (162-item) | 0–100 |
+| `fsp` | FrontSwitch Functional Scale Pool (36 items pick 12) | 48 |
 | `phq-9` | Patient Health Questionnaire-9 | 0–27 |
 | `gad-7` | Generalized Anxiety Disorder-7 | 0–21 |
 | `ffmq-15` | Five Facet Mindfulness Questionnaire (15-item) | 0–60 |
 
-PHQ-9 severity: 0–4 Minimal · 5–9 Mild · 10–14 Moderate · 15–19 Moderately severe · 20–27 Severe
-
-GAD-7 severity: 0–4 None · 5–9 Mild · 10–14 Moderate · 15–21 Severe
 
 ---
 
@@ -126,7 +122,7 @@ Enable **Remap 0–10 → 0–4** if your historical data used a 0–10 scale. U
 
 Native app database:
 ```
-~/Library/Application Support/com.dsw.app/dsw.sqlite
+~/Library/Application Support/com.frontswitchstudio.dsw/dsw.sqlite
 ```
 
 Standard SQLite — back up with Time Machine, copy between machines, or open in any SQLite viewer.

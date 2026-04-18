@@ -1,0 +1,8 @@
+#!/bin/sh
+# If frontswitchpool.psv is staged, regenerate docs/fsp.md and stage it too.
+
+if git diff --cached --name-only | grep -q "public/data/frontswitchpool.psv"; then
+  echo "frontswitchpool.psv changed — regenerating docs/fsp.md"
+  node scripts/export-fsp.js
+  git add docs/fsp.md
+fi
