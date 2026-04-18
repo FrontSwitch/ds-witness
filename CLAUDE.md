@@ -10,6 +10,7 @@ npm run build         # tsc type-check then Vite bundle
 npm run preview       # Serve the production build locally
 npm run tauri:dev     # Launch native app (starts Vite + Rust, first run compiles ~60s)
 npm run tauri:build   # Build distributable .app → src-tauri/target/release/bundle/macos/
+npm run export-fsp    # Regenerate docs/fsp.md from frontswitchpool.psv + scripts/fsp-template.md
 npx tsc --noEmit      # Type-check only (no test runner configured)
 ```
 
@@ -56,7 +57,7 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 **Dormancy** (`src/dormancy.ts`): `computeDormant()` marks questions dormant if scored 0 in each of last 2 completed runs, or flagged `dormant` in PSV. `anchor` flag overrides. `selectDormantSample()` picks 10% (min 1) seeded by run ID. `seededShuffle()` for consistent shuffle per run. Obsolete questions are excluded before calling these. Uses `itemMax` from metadata for reverse-score normalization.
 
 **Assessment versioning** (`src/db.ts`):
-- Each run stores an `assessment_version` — an 8-char SHA-256 hash of the active (non-obsolete) question content (id, sorted flags, text) at run creation time.
+- Each run stores an `assessment_version` — an 8-char SHA-256 hash of the active (non-obsolete) question content (id, category, subclass, sorted flags, text) at run creation time.
 - `computeAssessmentVersion(questions)` in `src/questions.ts` computes the hash via Web Crypto API.
 - `snapshotVersion(dataset, activeQuestions, hash)` — stores a delta snapshot. First call for a dataset writes all questions; subsequent calls write only changed questions + tombstones (null `text`) for removed/obsoleted ones. Idempotent on hash.
 - `getQuestionsForVersion(hash)` — reconstructs the question set by walking the `dataset_versions` parent chain and taking the most recent definition per question ID. Tombstones are dropped.
@@ -77,11 +78,15 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 - `obsolete` — excluded from assessment, scoring, and version snapshots; causes a tombstone in the next snapshot
 - Any flag declared via `@secondary` — marks questions belonging to that secondary score group
 
+**Sampled datasets** (`src/sampling.ts`): datasets where only a subset of questions are shown per run. Currently `fsp`. Uses deck-cycling: 1 question per subclass per run, cycling through all N questions in a subclass before reshuffling. `getRunIndex(dataset, runId)` in `db.ts` provides a stable 0-based position. Dormancy is disabled for sampled datasets.
+
+**Disclaimer** (`src/disclaimer.ts`): first-run modal, accept/decline. Stored in `localStorage` (`dsw-disclaimer-accepted`). Decline exits the app (Tauri) or prompts to close the tab (browser).
+
 **Pages** (`src/pages/`):
-- `home.ts` — dataset cards with latest score, due-date badge, optional radar chart; `DATASETS` array controls which appear; sorted most-overdue first; version string in footer from `src/version.ts`
-- `assessment.ts` — progressive reveal; emote buttons top-right of each card; Shuffle + Dormant toggles in header; dormant hidden by default on new runs; snapshots version on load; abandon uses two-click pattern (no `confirm()`)
-- `summary.ts` — score hero with severity tint/label and version hash; subclass table with secondary score rows; changed-questions table vs previous run; scores against run's own snapshot
-- `history.ts` — optional radar above table; transposed table (runs as columns); three-level expand: category → subclass → questions; sparklines; severity tints; version hash in column header; scores each run against its own snapshot; secondary score rows above subclasses; emotes in cells; delete uses two-click pattern
+- `home.ts` — dataset cards with latest score, due-date badge, optional radar chart; loaded from `public/data/datasets.json` manifest; skips missing PSVs gracefully; About modal with logo, description, GitHub link; version string + copyright in footer
+- `assessment.ts` — progressive reveal; emote buttons top-right of each card; Shuffle + Dormant toggles in header; dormant hidden by default on new runs; snapshots version on load; abandon uses two-click pattern (no `confirm()`); sampled datasets skip dormancy and use `sampleQuestions()`
+- `summary.ts` — score hero with severity tint/label, version hash, and duration; subclass table with secondary score rows; changed-questions table vs previous run; scores against run's own snapshot
+- `history.ts` — optional radar above table; transposed table (runs as columns); three-level expand: category → subclass → questions; sparklines; severity tints; version hash + duration in column header; scores each run against its own snapshot; secondary score rows above subclasses; emotes in cells; delete uses two-click pattern
 - `import.ts` — paste historical MID data as `id|answer` columns with date headers; validates question IDs against current active set; tags imported runs with current version
 
 **Tauri** (`src-tauri/`):
@@ -92,9 +97,17 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 
 ## Adding a new dataset
 
-1. Add `public/data/<name>.psv` with metadata headers (`@title`, `@tagline`, `@frequency`, `@max`; add `@normalize` + `@item-max` if normalized scoring is needed; add `@secondary: flag=Label` lines for any secondary score groups)
-2. Add name to `DATASETS` in `src/pages/home.ts`
-3. Add config entry in `src/datasets.ts` (scale labels, preamble, severity bands)
+1. Add `public/data/<name>.psv` with metadata headers (`@title`, `@tagline`, `@frequency`, `@max`; add `@normalize` + `@item-max` if normalized scoring is needed; add `@secondary: flag=Label` lines for any secondary score groups; add `@scale-labels`, `@preamble`, `@severity` as needed)
+2. Add an entry to `public/data/datasets.json` (use `"path"` key if the PSV is in a subfolder, e.g. `private/`)
+3. Private PSVs go in `public/data/private/` (gitignored); add `{ "id": "name", "path": "private/name" }` to datasets.json
+
+## FSP question pool
+
+- Questions: `public/data/frontswitchpool.psv`
+- Template: `scripts/fsp-template.md` — prose, section headers, `{generated_format}` and `{generated_questions}` placeholders
+- Script: `scripts/export-fsp.js` — parses PSV, substitutes placeholders, writes `docs/fsp.md`
+- Pre-commit hook (`.githooks/pre-commit`) auto-regenerates `docs/fsp.md` when the PSV is staged
+- To write directly to the FSP repo: `npm run export-fsp -- /path/to/fsp-repo/README.md`
 
 ## Editing a PSV file
 
