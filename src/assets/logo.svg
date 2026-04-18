@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="140"
+   viewBox="0 0 140 140"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="logo.svg"
+   height="140"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="5.1764704"
+     inkscape:cx="51.965911"
+     inkscape:cy="125.85796"
+     inkscape:window-width="1024"
+     inkscape:window-height="1022"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4" />
+  <!-- Option 1: Just the switch at 100x100 -->
+  <g
+     transform="matrix(0.44,0,0,0.44,-78.06,-14.92)"
+     style="color:#000000;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#000000;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g4">
+    <path
+       stroke-width="12"
+       d="m 238,68 q 1,-4 6,-5 h 186 q 6,0 7,5 l 1,247 q 0,6 -6,7 l -190,1 q -6,0 -7,-6 z"
+       style="color:#000000;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:none;stroke:#141413;stroke-width:12px;stroke-linecap:round;stroke-linejoin:round"
+       id="path1" />
+    <path
+       stroke-width="4"
+       d="m 284,94 q 0,-4 4,-4 h 105 q 4,0 4,4 l 1,178 q 0,4 -4,4 H 284 q -4,0 -4,-4 z"
+       style="color:#000000;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:none;stroke:#141413;stroke-width:4px;stroke-linecap:round;stroke-linejoin:round"
+       id="path2" />
+    <path
+       stroke-width="4"
+       fill="var(--color-background-primary)"
+       d="m 286,93 h 110 v 117 l -110,4 z"
+       style="color:#000000;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:none;stroke:#141413;stroke-width:4px;stroke-linecap:round;stroke-linejoin:round"
+       id="path3" />
+    <path
+       stroke-width="4"
+       fill="var(--color-background-secondary)"
+       d="m 286,214 110,-4 v 64 H 286 Z"
+       style="color:#000000;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', system-ui, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:none;stroke:#141413;stroke-width:4px;stroke-linecap:round;stroke-linejoin:round"
+       id="path4" />
+  </g>
+  <path
+     style="fill:#c8b7b7;stroke-width:0.772727"
+     d="M 28.615616,95.625 C 28.835382,80.00625 29.220777,55.665341 29.47205,41.534091 l 0.456859,-25.693182 h 40.356785 40.356786 l 0.5083,14.032965 c 0.27958,7.71813 0.50831,32.059039 0.50831,54.090909 V 124.02273 H 69.937567 28.216041 Z m 69.094977,11.05885 C 98.41765,105.83189 98.484876,96.0398 97.998392,64.763391 L 97.363636,23.954545 72.29953,23.75047 c -16.617241,-0.135301 -25.335413,0.06723 -25.869149,0.600967 -1.117709,1.11771 -2.87729,81.154763 -1.813246,82.478113 1.225264,1.52385 51.823085,1.385 53.093458,-0.1457 z"
+     id="path5" />
+  <path
+     style="fill:#cccccc;stroke-width:0.772727"
+     d="m 29.164518,78.625707 c 0.315485,-24.969139 0.784447,-49.310366 1.042138,-54.091616 l 0.468529,-8.693182 H 70.325044 109.9749 l 0.4385,6.375 c 0.24118,3.50625 0.65552,27.847159 0.92076,54.090909 l 0.48227,47.715912 -41.612764,7e-4 -41.612757,7.1e-4 z m 67.560434,28.346063 1.797775,-0.68352 V 84.758109 c 0,-11.841578 -0.229733,-30.458211 -0.510519,-41.370296 l -0.510519,-19.840156 -25.556137,0.203444 -25.556137,0.203444 -0.526055,3.09091 c -0.890369,5.231495 -2.349801,73.953395 -1.641024,77.272725 l 0.660003,3.09091 7.695195,0.48079 c 10.013947,0.62566 41.827133,-0.0359 44.147418,-0.91811 z"
+     id="path6" />
+  <path
+     style="fill:#ffffff;stroke-width:0.772727"
+     d="M 48.68182,52.647358 V 27.431819 h 23.181819 23.181819 v 24.250124 24.250125 l -5.602273,0.459455 c -3.08125,0.2527 -13.513069,0.687137 -23.181819,0.965413 L 48.68182,77.862895 Z"
+     id="path7" />
+  <path
+     style="fill:#ffffff;stroke-width:0.772727"
+     d="m 48.68182,92.727276 c 0,-6.5875 0.08693,-12.022666 0.193182,-12.078146 0.10625,-0.05548 10.538551,-0.49014 23.18289,-0.96591 L 95.0476,78.818185 95.0465,91.761367 95.0454,104.70455 H 71.863639 48.68182 Z"
+     id="path8" />
+  <path
+     style="fill:#ffffff;stroke-width:0.0120739"
+     d="m 46.584929,105.61014 c -0.346086,-0.0583 -0.478626,-0.19272 -0.535576,-0.54337 -0.0097,-0.0598 -0.0179,-0.18745 -0.0182,-0.28374 -7.61e-4,-0.2406 0.169815,-8.001398 0.176938,-8.050249 l 0.0057,-0.03924 h 0.337521 0.337521 v 4.467329 4.46733 l -0.105646,-0.001 c -0.05811,-6.8e-4 -0.14733,-0.008 -0.198276,-0.0168 z"
+     id="path9" />
+</svg>

@@ -1,0 +1,55 @@
+# @title: Functional State Pool
+# @tagline: Pool of questions for personal insight
+# @frequency: 1
+# @max: 100
+# @normalize: 12
+# @item-max: 4
+# @secondary: load=Load
+# @secondary: resistance=Resistance
+# @secondary: interference=Interference
+# @copyright: FrontSwitchStudio (2026) - MIT License
+# @scale-labels: Absent|Rare|Sometimes|Often|Constant
+# @preamble: In the past week...
+# LOAD = capacity overwhelmed (energy/sensory/cognitive)
+# RESISTANCE = pushback/avoidance/autonomy protection
+# INTERFERENCE = signal corruption/noise/agency disruption
+id|category|subclass|flags|question_text
+1|Doing|Initiation|load|Simple tasks felt unusually heavy to begin.
+2|Doing|Initiation|resistance|I avoided starting even when I knew it was manageable.
+3|Doing|Initiation|interference|I got stuck before starting a task or transitioning.
+4|Doing|Completion|load|I ran out of energy before finishing something I started.
+5|Doing|Completion|resistance|I abandoned tasks when they became effortful.
+6|Doing|Completion|interference|I lost track of what I was doing mid-task.
+7|Doing|Priority|load|I stopped seeing or ignored physical reminders I set for myself.
+8|Doing|Priority|resistance|I focused on low-priority tasks over important ones.
+9|Doing|Priority|interference|Important tasks kept slipping from awareness.
+
+10|Feeling|Cognitive|load|Thinking felt slow or effortful.
+11|Feeling|Cognitive|resistance|I avoided engaging with difficult thoughts.
+12|Feeling|Cognitive|interference|Internal chatter made it hard to think clearly.
+13|Feeling|Sensory|load|I had to shut down or withdraw due to overload.
+14|Feeling|Sensory|resistance|I avoided sensory input that felt like too much.
+15|Feeling|Sensory|interference|Sensory input felt distorted or distant.
+16|Feeling|Emotional|load|I could tell I should be having an emotion, but the signal didn't reach me.
+17|Feeling|Emotional|resistance|I pushed away feelings before they could register.
+18|Feeling|Emotional|interference|I was having emotions but didn't know to whom they belonged.
+
+19|Being|Identity|load|Maintaining a stable sense of self felt effortful.
+20|Being|Identity|resistance|I avoided connecting to a sense of who I am.
+21|Being|Identity|interference|I felt disconnected from my body or sense of self.
+22|Being|Continuity|load|Future plans felt irrelevant because that 'me' doesn't exist now"
+23|Being|Continuity|resistance|I avoided thinking about upcoming responsibilities.
+24|Being|Continuity|interference|Today, yesterday, and next week felt like they were in the wrong order.
+25|Being|Agency|load|I felt like an observer rather than an agent.
+26|Being|Agency|resistance|I resisted committing to decisions or directions.
+27|Being|Agency|interference|I was unsure who was fronting or in charge.
+
+28|Relating|Boundaries|load|Small demands felt disproportionately intrusive.
+29|Relating|Boundaries|resistance|I felt crowded or defensive, even alone.
+30|Relating|Boundaries|interference|Others' needs overrode my own sense of priority.
+31|Relating|Autonomy|load|I felt pressure against limits I couldn't define.
+32|Relating|Autonomy|resistance|I resisted structure even when it would help.
+33|Relating|Autonomy|interference|I felt like I was following rather than choosing.
+34|Relating|Reactivity|load|A request felt like an irritation or a physical attack.
+35|Relating|Reactivity|resistance|I stayed up late to reclaim personal time.
+36|Relating|Reactivity|interference|My responses to others didn't feel like "mine."

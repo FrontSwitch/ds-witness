@@ -1,0 +1,9 @@
+[
+  { "id": "mid-60",  "path": "private/mid-60" },
+  { "id": "mid-162", "path": "private/mid-162" },
+  { "id": "phq-9" },
+  { "id": "gad-7" },
+  { "id": "ffmq-15" },
+  { "id": "dss",    "path": "private/dss" },
+  { "id": "fsp",    "path": "frontswitchpool" }
+]

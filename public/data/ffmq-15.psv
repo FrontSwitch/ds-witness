@@ -1,0 +1,25 @@
+# FFMQ-15 — Five Facet Mindfulness Questionnaire (15-item short form)
+# Facets: Observe, Describe, Act with Awareness, Non-judge, Non-react
+# @title: Five Facet Mindfulness Questionnaire
+# @tagline: mindfulness
+# @frequency: 30
+# @max: 60
+# @copyright: Baer et al. (2006); short form Gu et al. (2015)
+# @scale-labels: Never or very rarely true|Rarely true|Sometimes true|Often true|Very often or always true
+# Stored as 0–4 (subtract 1 from displayed value). Reverse items use 'reverse' flag.
+id|category|subclass|flags|question text
+1|Observe|||When I'm walking, I deliberately notice the sensations of my body moving.
+2|Describe|||I'm good at finding the words to describe my feelings.
+3|Act with Awareness||reverse|I find myself doing things without paying attention.
+4|Non-judge||reverse|I criticize myself for having irrational or inappropriate emotions.
+5|Non-react|||When I have distressing thoughts or images, I am able just to notice them without reacting.
+6|Observe|||I notice how foods and drinks affect my thoughts, bodily sensations, and emotions.
+7|Describe||reverse|It's hard for me to find the words to describe what I'm thinking.
+8|Act with Awareness||reverse|I don't pay attention to what I'm doing because I'm daydreaming, worrying, or otherwise distracted.
+9|Non-judge||reverse|I tell myself I shouldn't be feeling the way I'm feeling.
+10|Non-react|||I watch my feelings without getting lost in them.
+11|Observe|||I pay attention to sensations, such as the wind in my hair or the sun on my face.
+12|Describe|||Even when I'm feeling terribly upset, I can find a way to put it into words.
+13|Act with Awareness||reverse|I am easily distracted.
+14|Non-judge||reverse|I make judgments about whether my thoughts are good or bad.
+15|Non-react|||In difficult situations, I can pause without immediately reacting.

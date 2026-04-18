@@ -1,0 +1,23 @@
+# GAD-7 Question Data
+# @title: Generalized Anxiety Disorder-7
+# @tagline: anxiety
+# @frequency: 30
+# @max: 21
+# @link: https://www.phqscreeners.com
+# @copyright: Spitzer et al. (2006) — free to use
+# @scale-labels: Not at all|Several days|More than half the days|Nearly every day
+# @preamble: Over the last two weeks, how often have you been bothered by any of the following problems?
+# @severity: 0-4=None:sev-none
+# @severity: 5-9=Mild:sev-mild
+# @severity: 10-14=Moderate:sev-moderate
+# @severity: 15-21=Severe:sev-severe
+# Format: id|category|subclass|flags|question text
+# Scoring: total = sum (0–21)
+id|category|subclass|flags|question
+1|On edge||anchor|Feeling nervous, anxious, or on edge
+2|Uncontrollable worry||anchor|Not being able to stop or control worrying
+3|Excessive worry||anchor|Worrying too much about different things
+4|Tension||anchor|Trouble relaxing
+5|Restlessness||anchor|Being so restless that it is hard to sit still
+6|Irritability||anchor|Becoming easily annoyed or irritable
+7|Dread||anchor|Feeling afraid, as if something awful might happen

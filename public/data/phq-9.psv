@@ -1,0 +1,26 @@
+# PHQ-9 Question Data
+# @title: Patient Health Questionnaire-9
+# @tagline: depression
+# @frequency: 30
+# @max: 27
+# @link: https://www.phqscreeners.com
+# @copyright: Kroenke, Spitzer & Williams (2001) — free to use
+# @scale-labels: Not at all|Several days|More than half the days|Nearly every day
+# @preamble: Over the last two weeks, how often have you been bothered by any of the following problems?
+# @severity: 0-4=Minimal:sev-none
+# @severity: 5-9=Mild:sev-mild
+# @severity: 10-14=Moderate:sev-moderate
+# @severity: 15-19=Moderately severe:sev-mod-severe
+# @severity: 20-27=Severe:sev-severe
+# Format: id|category|subclass|flags|question text
+# Scoring: total = sum (0–27)
+id|category|subclass|flags|question
+1|Anhedonia|||Little interest or pleasure in doing things
+2|Low mood|||Feeling down, depressed, or hopeless
+3|Sleep|||Trouble falling or staying asleep, or sleeping too much
+4|Fatigue|||Feeling tired or having little energy
+5|Appetite|||Poor appetite or overeating
+6|Worthlessness|||Feeling bad about yourself — or that you are a failure or have let yourself or your family down
+7|Concentration|||Trouble concentrating on things, such as reading the newspaper or watching television
+8|Psychomotor|||Moving or speaking so slowly that other people could have noticed — or the opposite, being so fidgety or restless that you have been moving around a lot more than usual
+9|Safety||anchor|Thoughts that you would be better off dead, or of hurting yourself in some way
