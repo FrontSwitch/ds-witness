@@ -15,11 +15,16 @@ The first release is available. Calling it "Early Access." Let me know what you 
 
 [open an issue](https://github.com/FrontSwitch/ds-witness/issues)
 
-<table>
+<table width="100%">
   <tr>
-    <td><img src="docs/images/fsp-run.png" alt="Run of Functional State Pool" width="33%"></td>
-    <td><img src="docs/images/fsp-history2.png" alt="History of Functional State Pool runs" width="33%"></td>
-    <td><img src="docs/images/fsp-card.png" alt="Main screen card for Function State Pool assessments" width="33%"></td>
+    <td width="33%"><img src="docs/images/fsp-run.png" alt="Run of Functional State Pool"></td>
+    <td width="33%"><img src="docs/images/fsp-history2.png" alt="History of Functional State Pool runs"></td>
+    <td width="33%"><img src="docs/images/fsp-card.png" alt="Main screen card for Function State Pool assessments"></td>
+  </tr>
+  <tr>
+    <td align="center">Run an assessment</td>
+    <td align="center">View history</td>
+    <td align="center">Summary card</td>
   </tr>
 </table>
 
