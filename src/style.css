@@ -107,6 +107,9 @@ button {
   padding: 6px 10px;
 }
 .btn-ghost:hover { color: var(--text); background: var(--bg-subtle); }
+.btn-ghost:disabled { opacity: .35; cursor: default; pointer-events: none; }
+
+.expand-controls { display: flex; gap: 8px; margin: 8px 0 4px; }
 
 .btn-danger-sm {
   background: transparent;

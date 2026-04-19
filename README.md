@@ -11,11 +11,11 @@ DISCLAIMER: This tool is a personal data collection project for self-observation
 
 ### Version v1.1.0
 
-Fixed a bug with many datasets. The first 3 history columns are locked. So you can see
-Expand/collapse all buttons. Does a single level - opens all categories to show subclasses, then questions.
-Added @count_ge to allow counting questions that have a score >= N.
-Databases change from dev to production to make my testing easier
-"npm run seed:dev" to populate the data
+- Fixed a bug with many datasets. The first 3 history columns are locked. So you can see
+- Expand next/collapse all buttons. Does a single level - opens all categories to show subclasses, then questions.
+- Added @count_ge to allow counting questions that have a score >= N.
+- Databases change from dev to production to make my testing easier
+- "npm run seed:dev" to populate the data
 
 ### Version v1.0.1
 

@@ -375,6 +375,10 @@ export async function historyPage(
 
   body.innerHTML = `
     ${radarHtml}
+    <div class="expand-controls">
+      <button class="btn-ghost expand-next-btn">Expand next</button>
+      <button class="btn-ghost collapse-all-btn">Collapse all</button>
+    </div>
     <div class="table-scroll">
       <table class="history-table">
         <thead>
@@ -397,6 +401,77 @@ export async function historyPage(
     </div>
     <p class="legend muted">Click a category to expand subclasses. Click a subclass to expand questions. Highlighted cells changed ≥ jump threshold vs. next older run.</p>
   `
+
+  // Expand-next / Collapse-all buttons
+  function anyCollapsedCategories(): boolean {
+    for (const row of body.querySelectorAll<HTMLElement>('.row-category')) {
+      const cat = row.dataset.category!
+      const children = [
+        ...body.querySelectorAll<HTMLElement>(`.row-subclass[data-category="${CSS.escape(cat)}"]`),
+        ...body.querySelectorAll<HTMLElement>(`.row-question[data-category="${CSS.escape(cat)}"]`),
+      ]
+      if (children.some(r => r.style.display === 'none')) return true
+    }
+    return false
+  }
+
+  function anyCollapsedSubclasses(): boolean {
+    for (const row of body.querySelectorAll<HTMLElement>('.row-subclass')) {
+      if (row.style.display === 'none') continue
+      const key = row.dataset.subclass!
+      const qRows = body.querySelectorAll<HTMLElement>(`.row-question[data-subclass="${CSS.escape(key)}"]`)
+      if (qRows.length > 0 && Array.from(qRows).some(r => r.style.display === 'none')) return true
+    }
+    return false
+  }
+
+  function syncExpandButtons(): void {
+    const btn = body.querySelector<HTMLButtonElement>('.expand-next-btn')
+    if (btn) btn.disabled = !anyCollapsedCategories() && !anyCollapsedSubclasses()
+  }
+
+  function doExpandNext(): void {
+    if (anyCollapsedCategories()) {
+      body.querySelectorAll<HTMLElement>('.row-category').forEach(row => {
+        const cat = row.dataset.category!
+        body.querySelectorAll<HTMLElement>(`.row-subclass[data-category="${CSS.escape(cat)}"]`)
+          .forEach(r => { r.style.display = '' })
+        body.querySelectorAll<HTMLElement>(`.row-question[data-category="${CSS.escape(cat)}"]`)
+          .forEach(r => { r.style.display = '' })
+        const icon = row.querySelector<HTMLElement>('.toggle-icon')
+        if (icon) icon.textContent = '▼'
+      })
+    } else if (anyCollapsedSubclasses()) {
+      body.querySelectorAll<HTMLElement>('.row-subclass').forEach(row => {
+        if (row.style.display === 'none') return
+        const key = row.dataset.subclass!
+        const qRows = body.querySelectorAll<HTMLElement>(`.row-question[data-subclass="${CSS.escape(key)}"]`)
+        qRows.forEach(r => { r.style.display = '' })
+        if (qRows.length > 0) {
+          const icon = row.querySelector<HTMLElement>('.toggle-icon')
+          if (icon) icon.textContent = '▼'
+        }
+      })
+    }
+    syncExpandButtons()
+  }
+
+  function doCollapseAll(): void {
+    body.querySelectorAll<HTMLElement>('.row-question').forEach(r => { r.style.display = 'none' })
+    body.querySelectorAll<HTMLElement>('.row-subclass[data-category]').forEach(r => {
+      r.style.display = 'none'
+      const icon = r.querySelector<HTMLElement>('.toggle-icon')
+      if (icon) icon.textContent = '▶'
+    })
+    body.querySelectorAll<HTMLElement>('.row-category .toggle-icon').forEach(icon => { icon.textContent = '▶' })
+    body.querySelectorAll<HTMLElement>('.row-subclass:not([data-category]) .toggle-icon')
+      .forEach(icon => { icon.textContent = '▶' })
+    syncExpandButtons()
+  }
+
+  syncExpandButtons()
+  body.querySelector('.expand-next-btn')?.addEventListener('click', doExpandNext)
+  body.querySelector('.collapse-all-btn')?.addEventListener('click', doCollapseAll)
 
   // Set sticky-column left offsets after layout so widths are accurate
   requestAnimationFrame(() => {
@@ -465,6 +540,7 @@ export async function historyPage(
       })
       directQRows.forEach(r => { r.style.display = expanded ? 'none' : '' })
       icon.textContent = expanded ? '▶' : '▼'
+      syncExpandButtons()
       return
     }
 
@@ -476,6 +552,7 @@ export async function historyPage(
       const expanded = qRows[0]?.style.display !== 'none'
       qRows.forEach(r => { r.style.display = expanded ? 'none' : '' })
       icon.textContent = expanded ? '▶' : '▼'
+      syncExpandButtons()
       return
     }
 
