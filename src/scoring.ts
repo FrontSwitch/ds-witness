@@ -16,6 +16,7 @@ export interface SecondaryScore {
   total: number
   scale: string
   count: number
+  type?: 'count-ge'  // absent = flag-based mean; 'count-ge' = count of answers >= threshold
 }
 
 export interface Score {
@@ -73,12 +74,18 @@ export function computeScore(
   }
   scale = max ? `0–${max}` : `0–${questions.length * 4}`
 
-  const secondaries: SecondaryScore[] = (meta.secondaries ?? []).flatMap(({ flag, label }) => {
-    const secAnswered = answered.filter(q => hasFlag(q, flag))
-    if (secAnswered.length === 0) return []
-    const secSum = secAnswered.reduce((acc, q) => acc + effectiveValue(q), 0)
-    return [{ flag, label, sum: secSum, total: secSum / secAnswered.length, scale: `0–${itemMax}`, count: secAnswered.length }]
-  })
+  const secondaries: SecondaryScore[] = [
+    ...(meta.secondaries ?? []).flatMap(({ flag, label }) => {
+      const secAnswered = answered.filter(q => hasFlag(q, flag))
+      if (secAnswered.length === 0) return []
+      const secSum = secAnswered.reduce((acc, q) => acc + effectiveValue(q), 0)
+      return [{ flag, label, sum: secSum, total: secSum / secAnswered.length, scale: `0–${itemMax}`, count: secAnswered.length }]
+    }),
+    ...(meta.countGe ?? []).map(({ id, label, threshold }) => {
+      const n = answered.filter(q => (answers.get(q.id) ?? 0) >= threshold).length
+      return { flag: id, label, sum: n, total: n, scale: `0–${answered.length}`, count: answered.length, type: 'count-ge' as const }
+    }),
+  ]
 
   return { total, scale, subclasses, answeredCount: answered.length, totalQuestions: questions.length, secondaries }
 }

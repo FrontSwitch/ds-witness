@@ -30,7 +30,8 @@ function exec(sql: string, params: SqlParam[] = []): void {
 
 const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 
-const DB_FILENAME = 'dsw.sqlite'
+const IS_DEV = import.meta.env.DEV
+const DB_FILENAME = IS_DEV ? 'dsw-dev.sqlite' : 'dsw.sqlite'
 
 async function getAppDir(): Promise<string> {
   const { appDataDir } = await import('@tauri-apps/api/path')
@@ -68,7 +69,7 @@ async function saveToDisk(): Promise<void> {
 
 // ── IndexedDB (browser fallback) ───────────────────────────────────────────
 
-const IDB_NAME = 'com.frontswitchstudio.dsw'
+const IDB_NAME = IS_DEV ? 'com.frontswitchstudio.dsw-dev' : 'com.frontswitchstudio.dsw'
 const IDB_STORE = 'data'
 
 function openIDB(): Promise<IDBDatabase> {

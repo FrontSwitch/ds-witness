@@ -10,6 +10,8 @@ npm run build         # tsc type-check then Vite bundle
 npm run preview       # Serve the production build locally
 npm run tauri:dev     # Launch native app (starts Vite + Rust, first run compiles ~60s)
 npm run tauri:build   # Build distributable .app → src-tauri/target/release/bundle/macos/
+npm run tauri:release # Build and open the bundle folder in Finder
+npm run seed:dev      # Populate dsw-dev.sqlite with 20 synthetic runs (PHQ-9, GAD-7, FFMQ-15)
 npm run export-fsp    # Regenerate docs/fsp.md from frontswitchpool.psv + scripts/fsp-template.md
 npx tsc --noEmit      # Type-check only (no test runner configured)
 ```
@@ -29,7 +31,7 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 
 **Routing:** `src/router.ts` — hash-based (`#/assessment/mid-60`). `route()` registers handlers; `navigate()` changes the hash.
 
-**Database:** `src/db.ts` — wraps sql.js. Detects Tauri via `window.__TAURI_INTERNALS__`. In Tauri: reads/writes `~/Library/Application Support/com.frontswitchstudio.dsw/dsw.sqlite`. In browser: uses IndexedDB. Writes debounced 150ms. Schema migrations run via `ALTER TABLE` with try/catch on each.
+**Database:** `src/db.ts` — wraps sql.js. Detects Tauri via `window.__TAURI_INTERNALS__`. In Tauri: reads/writes `~/Library/Application Support/com.frontswitchstudio.dsw/dsw.sqlite`. In browser: uses IndexedDB. Writes debounced 150ms. Schema migrations run via `ALTER TABLE` with try/catch on each. `import.meta.env.DEV` (true during `npm run dev` / `tauri:dev`) switches to `dsw-dev.sqlite` / `com.frontswitchstudio.dsw-dev` so dev data never touches the production database.
 
 **Questions:** Loaded from `public/data/<dataset>.psv` at runtime. PSV format: `id|category|subclass|flags|question text`. Lines starting with `#` are comments. Flags are comma-separated lowercase strings. Parsed and cached by `src/questions.ts`. Key exports: `hasFlag(q, flag)`, `getDatasetMeta(dataset)`, `computeAssessmentVersion(questions)`.
 
@@ -41,13 +43,14 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 - `@normalize` — canonical question count used as divisor for normalized scoring (e.g. 162, 60); omit for raw sum
 - `@item-max` — per-question max value (default 4); used in reverse scoring and normalized formula
 - `@secondary: flag=Label` — declares a secondary score group; one line per group. Questions get the flag in their flags field. Repeatable for multiple groups.
+- `@count-ge: id=Label:threshold` — declares a count-based secondary: counts answered questions where the raw answer ≥ threshold (e.g. `sds=Severe Dissociation Scale:2`). No per-question flags needed; applies across all answered questions.
 
 **Scoring** (`src/scoring.ts`):
 - Normalized datasets (have both `@max` and `@normalize`): `total = (sum × (max / itemMax)) / normalize`
 - Raw sum datasets (have only `@max`): `total = sum`
 - Jump threshold: 8% of `@max` for totals; 0.5 for subclass means
 - `obsolete`-flagged questions are excluded from scoring; callers filter before passing to `computeScore`
-- Secondary scores: `Score.secondaries` array, one entry per `@secondary` group with answered questions. Each entry: `{ flag, label, sum, total (mean), scale, count }`.
+- Secondary scores: `Score.secondaries` array, one entry per `@secondary` / `@count-ge` group. Flag-based entries: `{ flag, label, sum, total (mean), scale, count }`. Count-ge entries: same shape but `type: 'count-ge'`, `sum` = the count, `total = sum`, `count` = total answered. Display code checks `type` to decide formatting (`sum/count=mean` vs plain count).
 - Reverse scoring: `itemMax - raw` (uses per-dataset `itemMax`, not hardcoded 4)
 
 **Dataset config** (`src/datasets.ts`): scale labels (answer text), preamble, severity bands per dataset. `getSeverityBand(dataset, score)` returns band for highlighting.
@@ -86,7 +89,7 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 - `home.ts` — dataset cards with latest score, due-date badge, optional radar chart; loaded from `public/data/datasets.json` manifest; skips missing PSVs gracefully; About modal with logo, description, GitHub link; version string + copyright in footer
 - `assessment.ts` — progressive reveal; emote buttons top-right of each card; Shuffle + Dormant toggles in header; dormant hidden by default on new runs; snapshots version on load; abandon uses two-click pattern (no `confirm()`); sampled datasets skip dormancy and use `sampleQuestions()`
 - `summary.ts` — score hero with severity tint/label, version hash, and duration; subclass table with secondary score rows; changed-questions table vs previous run; scores against run's own snapshot
-- `history.ts` — optional radar above table; transposed table (runs as columns); three-level expand: category → subclass → questions; sparklines; severity tints; version hash + duration in column header; scores each run against its own snapshot; secondary score rows above subclasses; emotes in cells; delete uses two-click pattern
+- `history.ts` — optional radar above table; transposed table (runs as columns); three-level expand: category → subclass → questions (if a category has no subclass, questions appear directly on category expand); sparklines; severity tints; version hash + duration in column header; scores each run against its own snapshot; secondary score rows above subclasses; emotes in cells; delete uses two-click pattern. First 3 columns (label, sparkline, latest run) are CSS sticky — `requestAnimationFrame` sets `--sticky-col2` / `--sticky-col3` CSS vars on the table element after render so left offsets match actual widths. Severity tints use `background-image: linear-gradient(...)` (not `background-color`) so sticky cells can maintain an opaque `background-color: var(--bg)` beneath the semi-transparent tint.
 - `import.ts` — paste historical MID data as `id|answer` columns with date headers; validates question IDs against current active set; tags imported runs with current version
 
 **Tauri** (`src-tauri/`):
@@ -115,4 +118,5 @@ Dissociative System Witness — a local, private psychology assessment tracker. 
 - **New question** → add with a new unique ID; gaps in IDs are fine.
 - **Retiring a question** → add `obsolete` to its flags. It will be tombstoned in the next snapshot and excluded from all future runs. Old runs that answered it continue to score it via their snapshot.
 - **Intent change** → assign a new ID; treat the old ID as obsolete.
-- **Adding a secondary group** → add `# @secondary: flagname=Label` to the header, then add `flagname` to the flags field of the relevant questions.
+- **Adding a flag-based secondary group** → add `# @secondary: flagname=Label` to the header, then add `flagname` to the flags field of the relevant questions.
+- **Adding a count-ge secondary** → add `# @count-ge: id=Label:threshold` to the header. No per-question changes needed.

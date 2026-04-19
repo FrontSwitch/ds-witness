@@ -21,6 +21,7 @@ export interface DatasetMeta {
   normalize: number  // question-count divisor for normalized scoring (e.g. 162, 60); raw sum if absent
   itemMax: number    // per-question max value (e.g. 4, 3, 17); defaults to 4
   secondaries: Array<{ flag: string; label: string }>  // secondary score groups declared via @secondary
+  countGe: Array<{ id: string; label: string; threshold: number }>  // count-ge secondaries via @count-ge
   link: string       // URL to dataset source / documentation
   copyright: string  // attribution / copyright notice
   scaleLabels: string[]    // answer button labels, 0-indexed; from @scale-labels
@@ -63,6 +64,19 @@ export async function loadQuestions(dataset: string, psvPath?: string): Promise<
             const flag = val.slice(0, eq).trim()
             const label = val.slice(eq + 1).trim()
             meta.secondaries = [...(meta.secondaries ?? []), { flag, label }]
+          }
+        }
+        else if (key === 'count-ge') {
+          // format: id=label:threshold  e.g. sds=Severe Dissociation Scale:2
+          const colon = val.lastIndexOf(':')
+          const eq = val.indexOf('=')
+          if (colon !== -1 && eq !== -1 && eq < colon) {
+            const id = val.slice(0, eq).trim()
+            const label = val.slice(eq + 1, colon).trim()
+            const threshold = parseInt(val.slice(colon + 1).trim())
+            if (!isNaN(threshold)) {
+              meta.countGe = [...(meta.countGe ?? []), { id, label, threshold }]
+            }
           }
         }
         else if (key === 'link') { if (val.trim()) meta.link = val.trim() }

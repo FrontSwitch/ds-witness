@@ -487,10 +487,12 @@ button {
 .score-delta    { font-size: 18px; margin-top: 12px; font-weight: 500; }
 
 /* ── Severity tints on table cells ──────────────────────────────────────── */
-.sev-mild       { background: var(--sev-mild-bg) !important; }
-.sev-moderate   { background: var(--sev-moderate-bg) !important; }
-.sev-mod-severe { background: var(--sev-mod-severe-bg) !important; }
-.sev-severe     { background: var(--sev-severe-bg) !important; }
+/* Use background-image (gradient) not background-color, so that sticky cells
+   can independently set background-color: var(--bg) as an opaque base beneath */
+.sev-mild       { background-image: linear-gradient(var(--sev-mild-bg),       var(--sev-mild-bg))       !important; }
+.sev-moderate   { background-image: linear-gradient(var(--sev-moderate-bg),   var(--sev-moderate-bg))   !important; }
+.sev-mod-severe { background-image: linear-gradient(var(--sev-mod-severe-bg), var(--sev-mod-severe-bg)) !important; }
+.sev-severe     { background-image: linear-gradient(var(--sev-severe-bg),     var(--sev-severe-bg))     !important; }
 
 .version-hash {
   display: block;
@@ -559,6 +561,33 @@ button {
   white-space: nowrap;
   position: relative;
 }
+
+/* Frozen columns: label (1), sparkline (2), latest run (3) */
+.history-table thead th:nth-child(-n+3),
+.history-table tbody td:nth-child(-n+3) {
+  position: sticky;
+  background-color: var(--bg); /* explicit color only — lets background-image from severity tints through */
+  border-right: none;
+  box-shadow: 1px 0 0 0 var(--border);
+}
+.history-table thead th:nth-child(-n+3) { z-index: 3; }
+.history-table tbody td:nth-child(-n+3) { z-index: 2; }
+
+.history-table th:nth-child(1), .history-table td:nth-child(1) { left: 0; }
+.history-table th:nth-child(2), .history-table td:nth-child(2) { left: var(--sticky-col2, 200px); }
+.history-table th:nth-child(3), .history-table td:nth-child(3) {
+  left: var(--sticky-col3, 290px);
+  box-shadow: 1px 0 0 0 var(--border), 3px 0 6px -1px rgba(0,0,0,0.18);
+}
+
+/* Re-declare row backgrounds for sticky cells using background-color only,
+   so severity background-image tints remain active on top */
+.row-subclass td:nth-child(-n+3)           { background-color: var(--bg-subtle); }
+.row-subclass:hover td:nth-child(-n+3)     { background-color: var(--border); }
+.row-subclass.row-taxon td:nth-child(-n+3) { background-color: var(--bg); }
+.row-category:hover td:nth-child(-n+3)     { background-color: var(--bg-subtle); }
+.row-question td:nth-child(-n+3)           { background-color: var(--bg); }
+.row-question:hover td:nth-child(-n+3)     { background-color: var(--bg-subtle); }
 .col-run .delete-run-btn {
   position: absolute;
   top: 2px;

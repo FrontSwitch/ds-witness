@@ -10,6 +10,8 @@
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
+    "tauri:release": "tauri build && open src-tauri/target/release/bundle/macos",
+    "seed:dev": "node scripts/seed-dev.js",
     "export-fsp": "node scripts/export-fsp.js",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },

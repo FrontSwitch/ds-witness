@@ -153,7 +153,7 @@ export async function historyPage(
     const deltaStr = delta !== null && Math.abs(delta) >= 0.005
       ? `<span class="cell-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(decimals)}</span>`
       : ''
-    const cls = ['td-num', jump ? 'cell-jump' : '', sevClass].filter(Boolean).join(' ')
+    const cls = ['td-num', jump ? 'cell-jump' : (sevClass || '')].filter(Boolean).join(' ')
     const icons = emoteMask ? `<span class="cell-emotes">${emoteIcons(emoteMask)}</span>` : ''
     return `<td class="${cls}"><div class="cell-inner">${deltaStr}<span class="cell-val">${val.toFixed(decimals)}</span></div>${icons}</td>`
   }
@@ -182,14 +182,15 @@ export async function historyPage(
   }
 
   // Helper: full question row (<tr> with one questionCell per run column)
-  function questionRow(q: Question, subclassKey: string): string {
+  function questionRow(q: Question, subclassKey: string, directCategory?: string): string {
     const qCells = runData.map(({ answers, emotes }, i) =>
       questionCell(q, answers.get(q.id), runData[i + 1]?.answers.get(q.id), emotes.get(q.id) ?? 0)
     ).join('')
     const rev = hasFlag(q, 'reverse')
     const revMarker = rev ? ' <span class="reverse-marker" title="reverse scored">⇄</span>' : ''
+    const catAttr = directCategory ? ` data-category="${directCategory}"` : ''
     return `
-      <tr class="row-question" data-subclass="${subclassKey}" style="display:none">
+      <tr class="row-question" data-subclass="${subclassKey}"${catAttr} style="display:none">
         <td class="td-question-text" title="${q.text}">${q.id}.${revMarker} ${q.text.length > 55 ? q.text.slice(0, 55) + '…' : q.text}</td>
         <td class="spark-col"></td>
         ${qCells}
@@ -204,33 +205,35 @@ export async function historyPage(
     return valueCell(score.total, prev?.total, jump, 2, severities[i])
   }).join('')
 
-  // Secondary score rows — one per @secondary declared in PSV, only if at least one run has answers
+  // Secondary score rows — one per @secondary / @count-ge declared in PSV
   const secondaryRows = runData[0].score.secondaries.map(sec => {
     const hasAny = runData.some(d => d.score.secondaries.some(s => s.flag === sec.flag))
     if (!hasAny) return ''
-    const secQuestions = runData[0].runQuestions.filter(q => hasFlag(q, sec.flag))
-    // Sparkline and jump use mean (comparable across runs regardless of question count)
+    const isCountGe = sec.type === 'count-ge'
+    const secQuestions = isCountGe ? [] : runData[0].runQuestions.filter(q => hasFlag(q, sec.flag))
     const secValsChron = [...runData].reverse().map(d => d.score.secondaries.find(s => s.flag === sec.flag)?.total)
     const secCells = runData.map(({ score }, i) => {
       const s = score.secondaries.find(x => x.flag === sec.flag)
       const prev = runData[i + 1]?.score.secondaries.find(x => x.flag === sec.flag)
       if (!s) return '<td class="td-num muted">—</td>'
-      const mean = s.total
-      const prevMean = prev?.total
-      const delta = prevMean !== undefined ? mean - prevMean : null
-      const jump = delta !== null && Math.abs(delta) >= subclassJumpThreshold()
-      const deltaStr = delta !== null && Math.abs(delta) >= 0.005
-        ? `<span class="cell-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(2)}</span>`
+      const delta = prev !== undefined ? s.total - prev.total : null
+      const jump = !isCountGe && delta !== null && Math.abs(delta) >= subclassJumpThreshold()
+      const decimals = isCountGe ? 0 : 2
+      const minDelta = isCountGe ? 0.5 : 0.005
+      const deltaStr = delta !== null && Math.abs(delta) >= minDelta
+        ? `<span class="cell-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(decimals)}</span>`
         : ''
       const cls = ['td-num', jump ? 'cell-jump' : ''].filter(Boolean).join(' ')
-      return `<td class="${cls}"><div class="cell-inner">${deltaStr}<span class="cell-val">${s.sum}/${s.count}=${mean.toFixed(2)}</span></div></td>`
+      const val = isCountGe ? `${s.sum}` : `${s.sum}/${s.count}=${s.total.toFixed(2)}`
+      return `<td class="${cls}"><div class="cell-inner">${deltaStr}<span class="cell-val">${val}</span></div></td>`
     }).join('')
     const secQRows = secQuestions.map(q => questionRow(q, sec.flag)).join('')
+    const toggleIcon = secQuestions.length > 0 ? '<span class="toggle-icon">▶</span> ' : ''
+    const qCountLabel = secQuestions.length > 0 ? `<span class="q-count">${secQuestions.length}q</span>` : ''
     return `
-      <tr class="row-subclass row-taxon" data-subclass="${sec.flag}">
+      <tr class="row-subclass row-taxon${secQuestions.length === 0 ? ' no-expand' : ''}" data-subclass="${sec.flag}">
         <td class="subclass-toggle">
-          <span class="toggle-icon">▶</span> ${sec.label}
-          <span class="q-count">${secQuestions.length}q</span>
+          ${toggleIcon}${sec.label}${qCountLabel}
         </td>
         <td class="spark-col">${sparkline(secValsChron)}</td>
         ${secCells}
@@ -241,9 +244,16 @@ export async function historyPage(
   // Subclass rows + question rows, grouped by category
   // Named category → collapsed category row + hidden subclass rows
   // Empty category → subclass rows shown directly
+  // Empty subclass → questions appear directly under category (no subclass row)
   function subclassRowHtml(key: string, indent: boolean): string {
-    const [, subName] = key.split('\0')
+    const [cat, subName] = key.split('\0')
     const qs = questionsBySubclass.get(key) ?? []
+
+    if (!subName) {
+      // No subclass — questions are direct children of the category; controlled by category toggle
+      return qs.map(q => questionRow(q, key, cat)).join('')
+    }
+
     const subValsChron = [...runData].reverse().map(({ score }) => {
       const s = score.subclasses.find(x => `${x.category}\0${x.subclass}` === key)
       return s?.sum
@@ -257,7 +267,6 @@ export async function historyPage(
       return valueCell(s?.sum, prev?.sum, jump, 0, severities[i], subEmotes)
     }).join('')
     const qRows = qs.map(q => questionRow(q, key)).join('')
-    const [cat] = key.split('\0')
     return `
       <tr class="row-subclass" data-subclass="${key}"${cat ? ` data-category="${cat}"` : ''} ${indent ? 'style="display:none"' : ''}>
         <td class="subclass-toggle${indent ? ' subclass-indent' : ''}">
@@ -287,12 +296,14 @@ export async function historyPage(
       return valueCell(val, prevVal, false, 0, severities[i])
     }).join('')
     const qCount = keys.reduce((acc, k) => acc + (questionsBySubclass.get(k)?.length ?? 0), 0)
+    const hasSubs = keys.some(k => k.split('\0')[1] !== '')
+    const countLabel = hasSubs ? `${keys.filter(k => k.split('\0')[1]).length} sub · ${qCount}q` : `${qCount}q`
 
     return `
       <tr class="row-category" data-category="${cat}">
         <td class="category-toggle">
           <span class="toggle-icon">▶</span> ${cat}
-          <span class="q-count">${keys.length} sub · ${qCount}q</span>
+          <span class="q-count">${countLabel}</span>
         </td>
         <td class="spark-col">${sparkline(catValsChron)}</td>
         ${catCells}
@@ -387,6 +398,17 @@ export async function historyPage(
     <p class="legend muted">Click a category to expand subclasses. Click a subclass to expand questions. Highlighted cells changed ≥ jump threshold vs. next older run.</p>
   `
 
+  // Set sticky-column left offsets after layout so widths are accurate
+  requestAnimationFrame(() => {
+    const tbl = body.querySelector<HTMLElement>('.history-table')
+    if (!tbl) return
+    const ths = tbl.querySelectorAll<HTMLElement>('thead tr th')
+    const col1w = ths[0]?.offsetWidth ?? 200
+    const col2w = ths[1]?.offsetWidth ?? 90
+    tbl.style.setProperty('--sticky-col2', `${col1w}px`)
+    tbl.style.setProperty('--sticky-col3', `${col1w + col2w}px`)
+  })
+
   // Radar hover — highlight run polygon on column header mouseenter (all radar SVGs)
   const radarEls = body.querySelectorAll<SVGElement>('.history-radar')
   if (radarEls.length > 0) {
@@ -425,8 +447,11 @@ export async function historyPage(
     if (categoryRow) {
       const cat = categoryRow.dataset.category!
       const subRows = body.querySelectorAll<HTMLElement>(`.row-subclass[data-category="${CSS.escape(cat)}"]`)
+      const directQRows = body.querySelectorAll<HTMLElement>(`.row-question[data-category="${CSS.escape(cat)}"]`)
       const icon = categoryRow.querySelector('.toggle-icon')!
-      const expanded = subRows[0]?.style.display !== 'none'
+      const expanded = subRows.length > 0
+        ? subRows[0].style.display !== 'none'
+        : directQRows[0]?.style.display !== 'none'
       subRows.forEach(r => {
         r.style.display = expanded ? 'none' : ''
         if (expanded) {
@@ -438,6 +463,7 @@ export async function historyPage(
           if (subIcon) subIcon.textContent = '▶'
         }
       })
+      directQRows.forEach(r => { r.style.display = expanded ? 'none' : '' })
       icon.textContent = expanded ? '▶' : '▼'
       return
     }

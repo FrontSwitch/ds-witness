@@ -74,19 +74,20 @@ export async function summaryPage(
 
   const secondaryRows = score.secondaries.map(sec => {
     const prev = prevScore?.secondaries.find(s => s.flag === sec.flag)
-    const meanDelta = prev != null ? sec.total - prev.total : null
-    const sumDelta = prev != null ? sec.sum - prev.sum : null
-    const jump = meanDelta !== null && Math.abs(meanDelta) >= subclassJumpThreshold()
+    const isCountGe = sec.type === 'count-ge'
+    const delta = prev != null ? sec.sum - prev.sum : null
+    const meanDelta = isCountGe ? null : (prev != null ? sec.total - prev.total : null)
+    const jump = !isCountGe && meanDelta !== null && Math.abs(meanDelta) >= subclassJumpThreshold()
     return `
       <tr class="${jump ? 'row-jump' : ''} row-taxon-summary">
         <td class="td-category"></td>
         <td class="td-subclass">${sec.label}</td>
-        <td class="td-num">${sec.count > 0 ? `${sec.sum}/${sec.count}` : '—'}</td>
-        <td class="td-num">${sec.count > 0 ? sec.total.toFixed(2) : '—'}</td>
-        <td class="td-num">${sec.count}</td>
+        <td class="td-num">${isCountGe ? sec.sum : (sec.count > 0 ? `${sec.sum}/${sec.count}` : '—')}</td>
+        <td class="td-num">${isCountGe ? '—' : (sec.count > 0 ? sec.total.toFixed(2) : '—')}</td>
+        <td class="td-num">${isCountGe ? sec.count : sec.count}</td>
         ${prevScore ? `
-          <td class="td-delta ${deltaClass(meanDelta ?? 0)}">${meanDelta !== null ? fmtDelta(meanDelta) : '—'}</td>
-          <td class="td-delta ${deltaClass(sumDelta ?? 0)}">${sumDelta !== null ? fmtDelta(sumDelta) : '—'}</td>
+          <td class="td-delta ${deltaClass(isCountGe ? (delta ?? 0) : (meanDelta ?? 0))}">${isCountGe ? (delta !== null ? fmtDelta(delta) : '—') : (meanDelta !== null ? fmtDelta(meanDelta) : '—')}</td>
+          <td class="td-delta ${deltaClass(delta ?? 0)}">${delta !== null ? fmtDelta(delta) : '—'}</td>
         ` : ''}
       </tr>
     `
