@@ -473,15 +473,26 @@ export async function historyPage(
   body.querySelector('.expand-next-btn')?.addEventListener('click', doExpandNext)
   body.querySelector('.collapse-all-btn')?.addEventListener('click', doCollapseAll)
 
-  // Set sticky-column left offsets after layout so widths are accurate
+  // Scroll to top so getBoundingClientRect() gives correct viewport-relative positions
+  // even when navigating from a previously-scrolled history page.
+  window.scrollTo(0, 0)
+
+  // Set sticky offsets and table-scroll height after layout so measurements are accurate
   requestAnimationFrame(() => {
     const tbl = body.querySelector<HTMLElement>('.history-table')
-    if (!tbl) return
+    const scroll = body.querySelector<HTMLElement>('.table-scroll')
+    if (!tbl || !scroll) return
+
     const ths = tbl.querySelectorAll<HTMLElement>('thead tr th')
     const col1w = ths[0]?.offsetWidth ?? 200
     const col2w = ths[1]?.offsetWidth ?? 90
     tbl.style.setProperty('--sticky-col2', `${col1w}px`)
     tbl.style.setProperty('--sticky-col3', `${col1w + col2w}px`)
+
+    // max-height: sticky rows only activate when the table actually overflows the box.
+    // height would create a tall empty box for short/collapsed tables, killing overflow.
+    const legendH = (body.querySelector<HTMLElement>('.legend')?.offsetHeight ?? 0) + 16
+    scroll.style.maxHeight = `${window.innerHeight - scroll.getBoundingClientRect().top - legendH}px`
   })
 
   // Radar hover — highlight run polygon on column header mouseenter (all radar SVGs)

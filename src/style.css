@@ -562,9 +562,17 @@ button {
   text-align: right;
   min-width: 80px;
   white-space: nowrap;
-  position: relative;
+  /* position comes from the thead th sticky rule; position:relative was here
+     but specificity 0,2,1 defeated position:sticky on the sticky rule (0,1,2) */
 }
 
+/* Frozen rows: header + total */
+.history-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: var(--bg);
+}
 /* Frozen columns: label (1), sparkline (2), latest run (3) */
 .history-table thead th:nth-child(-n+3),
 .history-table tbody td:nth-child(-n+3) {
@@ -573,7 +581,7 @@ button {
   border-right: none;
   box-shadow: 1px 0 0 0 var(--border);
 }
-.history-table thead th:nth-child(-n+3) { z-index: 3; }
+.history-table thead th:nth-child(-n+3) { z-index: 4; } /* corner: frozen row + col */
 .history-table tbody td:nth-child(-n+3) { z-index: 2; }
 
 .history-table th:nth-child(1), .history-table td:nth-child(1) { left: 0; }
@@ -639,7 +647,7 @@ button {
 }
 
 /* ── Tables ─────────────────────────────────────────────────────────────── */
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow: auto; }
 
 .summary-table,
 .history-table {
